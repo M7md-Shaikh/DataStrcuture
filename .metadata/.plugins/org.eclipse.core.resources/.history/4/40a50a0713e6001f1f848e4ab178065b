@@ -1,0 +1,83 @@
+package application;
+	
+import javafx.application.Application;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+
+
+public class Main extends Application {
+	@Override
+	public void start(Stage primaryStage) {
+		try {
+			BorderPane root = new BorderPane();
+			Scene scene = new Scene(root,400,400);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args) {
+		launch(args);
+	}
+}
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
+
+public class MemberListTab {
+    private TableView<Member> tableView;
+    private ObservableList<Member> members;
+
+    public MemberListTab() {
+        members = FXCollections.observableArrayList();
+    }
+
+    public VBox getView() {
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(10));
+
+        tableView = new TableView<>();
+        tableView.setItems(members);
+
+        TableColumn<Member, Integer> idC = new TableColumn<>("ID");
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<Member, String> firstNC = new TableColumn<>("First Name");
+        firstNC.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+
+        TableColumn<Member, String> lastNC = new TableColumn<>("Last Name");
+        lastNC.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+
+        TableColumn<Member, String> phoneC = new TableColumn<>("Phone");
+        phoneC.setCellValueFactory(new PropertyValueFactory<>("phone"));
+
+        TableColumn<Member, Double> amountPC = new TableColumn<>("Amount Pay");
+        amountPC.setCellValueFactory(new PropertyValueFactory<>("amountPay"));
+
+        TableColumn<Member, String> addressC = new TableColumn<>("Address");
+        addressC.setCellValueFactory(new PropertyValueFactory<>("address"));
+
+        TableColumn<Member, String> genderC = new TableColumn<>("Gender");
+        genderC.setCellValueFactory(new PropertyValueFactory<>("gender"));
+
+        tableView.getColumns().addAll(idC, firstNC, lastNC, phoneC, amountPC, addressC, genderC);
+
+        vbox.getChildren().add(tableView);
+        return vbox;
+    }
+
+    public void addMember(Member member) {
+        members.add(member);
+    }
+
+    public ObservableList<Member> getMembers() {
+        return members;
+    }
+}

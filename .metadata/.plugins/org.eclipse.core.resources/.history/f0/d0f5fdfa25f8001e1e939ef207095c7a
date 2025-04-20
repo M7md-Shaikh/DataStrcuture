@@ -1,0 +1,108 @@
+package application;
+
+import java.io.File;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+public class Main extends Application {
+
+    public FileChooser fileChooser = new FileChooser(); 
+    static PalestineMartyrs pm = new PalestineMartyrs();
+    Label l = new Label();
+
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+        	Button chB = new Button("Load File");
+        	VBox vb = new VBox();
+            // Create the root BorderPane
+            TabPane tabPane = new TabPane();
+            BorderPane borderPane = new BorderPane();
+            
+            // Create tabs for District and Location screens
+            Tab districtTab = new Tab("District");
+            Tab locationTab = new Tab("Location");
+
+            // Set content for each tab
+            districtTab.setContent(pm.bpD);
+            locationTab.setContent(pm.bpL);
+            
+            // Add tabs to TabPane
+            tabPane.getTabs().addAll(districtTab, locationTab);
+            vb.getChildren().addAll(chB,l);
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            fileChooser.setTitle("Open CSV File");
+			fileChooser.setInitialDirectory(new File("C:\\Users\\mhmds\\Desktop\\M7md"));  // select File Location
+            
+            if (selectedFile != null) { 
+            	l.setText("Selected File: "+ selectedFile);
+            	pm.readCSVFile(selectedFile.getAbsolutePath());
+            } else {
+                l.setText("No file selected.");
+            }
+            
+            chB.setOnAction(e -> {            	 
+         
+            	fileChooser.setTitle("Open File");  // title for window
+            	fileChooser.setInitialDirectory(new File("C:\\Users\\mhmds\\Desktop\\M7md"));  // select File Location
+            	fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("CSV File","*.csv"));  // the kind of files
+            	File selectedFilee = fileChooser.showOpenDialog(primaryStage);
+    			if (selectedFilee != null) { 
+    				l.setText("Selected File: "+ selectedFilee);
+    				pm.readCSVFile(selectedFilee.getAbsolutePath());
+    			} else {
+    				l.setText("No file selected.");
+    	        }
+    			pm.printDistricts();
+            });
+            
+            pm.printDistricts();
+            pm.bpD.setBottom(vb);
+            Scene scene = new Scene(tabPane, 700, 500);
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Palestine Martyrs Application");
+            primaryStage.show();
+            
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+//        PalestineMartyrs p = new PalestineMartyrs();
+//
+//        // Create instances of Martyr, Location, and District
+//        Martyr mar = new Martyr("m7md", "1/1/2024", 15, "Kha", "Ram", "M");
+//        Location loc = new Location("Kha", mar);
+//        District dis = new District("Ram");
+//
+//        // Add the location to the district
+//        p.addLocation(loc, dis);
+//
+//        // Retrieve the first location of the district
+//        Location firstLocation = p.getFirstLocation(dis);
+//
+//        // Check if the first location was found
+//        if (firstLocation != null) {
+//            System.out.println("First location of Ram district:");
+//            System.out.println(firstLocation);
+//        } else {
+//            System.out.println("No location found for the Ram district.");
+//        }
+    	
+    	   Location loc = new Location("Kha");
+    	   District dis = new District("Ram");
+    	   pm.addDistrict(dis);
+    	   pm.addLocation(loc,dis);
+    	   System.out.println(dis.toString());
+    	launch(args);
+    }
+}

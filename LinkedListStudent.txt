@@ -1,0 +1,5 @@
+mohammad ,15
+ahmad,55
+issa ,30	
+rami,45	
+rami,45

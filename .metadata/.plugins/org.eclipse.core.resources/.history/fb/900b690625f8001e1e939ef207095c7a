@@ -1,0 +1,52 @@
+package application;
+
+public class Location {
+	
+	private String locationName ;
+	private Martyr martyr;
+    private NodeSS firstMartyr;
+	
+	public Location () {
+		this.martyr = new Martyr();
+	}
+	
+	
+	public Location (String locationName) {
+		this.locationName = locationName;
+		this.martyr=martyr;
+	}
+
+	public Location(String locationName, Martyr martyr) {
+		this.locationName = locationName;
+		this.martyr = martyr;
+	}
+
+	public String getLocationName() {
+		return locationName;
+	}
+
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+
+	public Martyr getMartyr() {
+		return martyr;
+	}
+
+	public void setMartyr(Martyr martyr) {
+		this.martyr = martyr;
+	}
+
+	public NodeSS getFirstMartyr() {
+		return firstMartyr;
+	}
+
+	public void setFirstMartyr(NodeSS firstMartyr) {
+		this.firstMartyr = firstMartyr;
+	}
+
+	public String toString() {
+        return "Location [locationName=" + locationName + "]";
+    }
+	
+}

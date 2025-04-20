@@ -1,0 +1,699 @@
+ckage application;
+
+import java.sql.*;
+
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+
+public class Phase3Operations extends Application{
+    ObservableList<Manager> managerData = FXCollections.observableArrayList();
+    ObservableList<Driver> driverData = FXCollections.observableArrayList();
+
+	BorderPane bp = new BorderPane();
+	Label l = new Label ("Select You'r Choice : ");
+	Button bMT = new Button ("Manager");
+	Button bDT = new Button ("Driver");
+	
+	
+	TextField tfINM = new TextField(); // insert name in Manager table
+	TextField tfIPM = new TextField(); // insert phone in Manager table
+	TextField tfIAM = new TextField(); // insert address in Manager table
+	TextField tfIIM = new TextField(); // insert id in Manager table
+	
+	TextField tfICIM = new TextField(); // insert name in Manager table
+	TextField tfINIM = new TextField(); // insert name in Manager table
+	TextField tfINNM = new TextField(); // insert phone in Manager table
+	TextField tfINPM = new TextField(); // insert address in Manager table
+	TextField tfINAM = new TextField(); // insert id in Manager table
+	
+	
+	// for Manager
+	Button bMII = new Button("Insert Manager");
+	Button bMUI = new Button("Update Manager");
+	Button bMDI = new Button("Delete Manager");
+		
+	TextField tfIND = new TextField(); // insert name in Manager table
+	TextField tfIPD = new TextField(); // insert phone in Manager table
+	TextField tfIAD = new TextField(); // insert address in Manager table
+	TextField tfIID = new TextField(); // insert id in Manager table
+	TextField tfIIMD = new TextField(); // insert id in Manager table
+	
+	TextField tfICID = new TextField(); // insert name in Manager table
+	TextField tfINID = new TextField(); // insert name in Manager table
+	TextField tfINND = new TextField(); // insert name in Manager table
+	TextField tfINPD = new TextField(); // insert phone in Manager table
+	TextField tfINAD = new TextField(); // insert address in Manager table
+	TextField tfINIMD = new TextField(); // insert id in Manager table
+	
+	public void start(Stage primaryStage) {
+
+		bMT.setMaxWidth(150);
+		bDT.setMaxWidth(150);
+		Scene scene = new Scene(bp,400,400);
+		VBox vb = new VBox(10);
+		vb.setAlignment(Pos.CENTER);
+		vb.getChildren().addAll(l,bMT,bDT);
+		
+		bMT.setOnAction(e -> ManagerScreen());
+		bDT.setOnAction(e -> DriverScreen());
+		
+		bp.setCenter(vb);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+	
+	public Stage ManagerScreen() {
+	    Stage stage = new Stage();
+	    BorderPane root = new BorderPane();
+	    root.setPadding(new Insets(20));
+
+	    // Title Label
+	    Label titleLabel = new Label("Manager Operations");
+	    titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
+	    // Create TableView and Columns
+	    TableView<Manager> tableView = new TableView<>();
+	    TableColumn<Manager, Integer> managerIdColumn = new TableColumn<>("Manager ID");
+	    TableColumn<Manager, String> managerNameColumn = new TableColumn<>("Name");
+	    TableColumn<Manager, String> managerPhoneColumn = new TableColumn<>("Phone");
+	    TableColumn<Manager, String> managerAddressColumn = new TableColumn<>("Address");
+
+	    // Set up columns
+	    managerIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+	    managerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+	    managerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+	    managerAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+
+	    // Add columns to table
+	    tableView.getColumns().add(managerIdColumn);
+	    tableView.getColumns().add(managerNameColumn);
+	    tableView.getColumns().add(managerPhoneColumn);
+	    tableView.getColumns().add(managerAddressColumn);
+
+	    // Populate the table with data from the database
+	    loadManagerData(managerData);
+	    tableView.setItems(managerData);
+
+	    // Layout
+	    VBox vbox = new VBox(10, titleLabel, tableView);
+	    vbox.setAlignment(Pos.CENTER);
+	    root.setBottom(vbox);
+
+	    Label lMI = new Label("Manager ID :");
+	    Label lMN = new Label("Manager Name :");
+	    Label lMP = new Label("Manager Phone :");
+	    Label lMA = new Label("Manager Address :");
+	    GridPane gridPane = new GridPane();
+	    gridPane.setHgap(10);
+	    gridPane.setVgap(10);
+	    gridPane.addRow(0, lMI, tfIIM);
+	    gridPane.addRow(1, lMN, tfINM);
+	    gridPane.addRow(2, lMP, tfIPM);
+	    gridPane.addRow(3, lMA, tfIAM);
+	    gridPane.addRow(4, bMII, bMDI, bMUI);
+	    gridPane.setAlignment(Pos.CENTER);
+
+	    VBox centerBox = new VBox(20, titleLabel, gridPane);
+	    centerBox.setAlignment(Pos.CENTER);
+	    root.setTop(centerBox);
+
+	    bMII.setOnAction(e -> {
+	        try {
+	            // Get the manager details from the input fields
+	            int managerId = Integer.parseInt(tfIIM.getText());
+	            String managerName = tfINM.getText();
+	            String managerPhone = tfIPM.getText();
+	            String managerAddress = tfIAM.getText();
+
+	            // Insert the manager into the database
+	            insertManager(managerId, managerName, managerPhone, managerAddress);
+
+	            // Clear the text fields
+	            tfIIM.clear();
+	            tfINM.clear();
+	            tfIPM.clear();
+	            tfIAM.clear();
+	            managerData.clear();
+	            loadManagerData(managerData);
+	        } catch (NumberFormatException ex) {
+	            System.out.println("Invalid input. Please enter valid IDs.");
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	    });
+
+
+	    bMUI.setOnAction(e -> {
+	        updateManagerScreen();
+	    });
+
+	    bMDI.setOnAction(e -> {
+	        try {
+	            int managerId = Integer.parseInt(tfIIM.getText());
+	            deleteManager(managerId);
+	            tfIIM.clear();
+	            tfINM.clear();
+	            tfIPM.clear();
+	            tfIAM.clear();
+	            managerData.clear();
+	            loadManagerData(managerData);
+	        } catch (NumberFormatException ex) {
+	            System.out.println("Invalid input. Please enter a valid ID.");
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	    });
+
+	    Scene scene = new Scene(root, 600, 500);
+	    stage.setScene(scene);
+	    stage.setTitle("Manager Operations");
+	    stage.show();
+
+	    return stage;
+	}
+
+
+	// Method to load Manager data from the database
+	private void loadManagerData(ObservableList<Manager> managerData) {
+	    String query = "SELECT * FROM Manager";  // Assuming you have a table called 'Manager'
+	    try (Connection conn = DatabaseConnector.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(query);
+	         ResultSet rs = pstmt.executeQuery()) {
+
+	        while (rs.next()) {
+	            int managerId = rs.getInt("Manager_ID");
+	            String managerName = rs.getString("Name");
+	            String managerPhone = rs.getString("Phone");
+	            String managerAddress = rs.getString("Address");
+
+	            // Add Manager to the ObservableList
+	            managerData.add(new Manager(managerId, managerName, managerPhone, managerAddress));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        // Handle database error
+	    }
+	}
+
+
+	
+
+	public Stage updateManagerScreen() {
+	    Stage stage = new Stage();
+	    BorderPane root = new BorderPane();
+	    root.setPadding(new Insets(20));
+
+	    Label titleLabel = new Label("Update Manager Operations");
+	    titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
+	    Label lMCI = new Label("Current Manager ID :");
+	    Label lMNI = new Label("New Manager ID :");
+	    Label lMN = new Label("Manager Name :");
+	    Label lMP = new Label("Manager Phone :");
+	    Label lMA = new Label("Manager Address :");
+	    Button updateButton = new Button("Update");
+	    
+
+	    GridPane gridPane = new GridPane();
+	    gridPane.setHgap(10);
+	    gridPane.setVgap(10);
+	    gridPane.addRow(0,lMCI,tfICIM );
+	    gridPane.addRow(1,lMNI,tfINIM );
+	    gridPane.addRow(2,lMN ,tfINNM );
+	    gridPane.addRow(3,lMP,tfINPM  );
+	    gridPane.addRow(4,lMA ,tfINAM  );
+	    gridPane.addRow(5, updateButton);
+	    gridPane.setAlignment(Pos.CENTER);
+
+	    VBox centerBox = new VBox(20, titleLabel, gridPane);
+	    centerBox.setAlignment(Pos.CENTER);
+	    root.setCenter(centerBox);
+	    
+	    updateButton.setOnAction(e -> {
+	        try {
+	            int managerCurrentId = Integer.parseInt(tfICIM.getText());
+	            int managerNewId = Integer.parseInt(tfINIM.getText());
+	            String managerName = (tfINNM.getText());
+	            String managerPhone = (tfINPM.getText());
+	            String managerAddress = (tfINAM.getText());
+	            
+	            updateManager(managerCurrentId , managerNewId, managerName,managerPhone , managerAddress);
+	            tfICIM.clear();
+	            tfINIM.clear();
+	            tfINNM.clear();
+	            tfINPM.clear();
+	            tfINAM.clear();
+	            managerData.clear();
+	            loadManagerData(managerData);
+
+	        } catch (NumberFormatException ex) {
+	            System.out.println("Invalid input. Please enter valid IDs.");
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	            // Handle database error
+	        }
+	    });
+
+
+	    Scene scene = new Scene(root, 600, 500);
+	    stage.setScene(scene);
+	    stage.setTitle("Manager Screen");
+	    stage.show();
+	    return stage;
+	}
+
+	public Stage DriverScreen() {
+	    Stage stage = new Stage();
+	    BorderPane root = new BorderPane();
+	    root.setPadding(new Insets(20));
+
+	    // Title Label
+	    Label titleLabel = new Label("Driver Operations");
+	    titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
+	    // Create TableView and Columns for Driver
+	    TableView<Driver> tableView = new TableView<>();
+	    TableColumn<Driver, Integer> driverIdColumn = new TableColumn<>("Driver ID");
+	    TableColumn<Driver, String> managerIdColumn = new TableColumn<>("Manager_ID");
+	    TableColumn<Driver, String> driverNameColumn = new TableColumn<>("Name");
+	    TableColumn<Driver, String> driverPhoneColumn = new TableColumn<>("Phone");
+	    TableColumn<Driver, String> driverAddressColumn = new TableColumn<>("Address");
+
+	    // Set up columns
+	    driverIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+	    managerIdColumn.setCellValueFactory(new PropertyValueFactory<>("managerId"));	    
+	    driverNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+	    driverPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+	    driverAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+
+	    // Add columns to table
+	    tableView.getColumns().add(driverIdColumn);
+	    tableView.getColumns().add(managerIdColumn);
+	    tableView.getColumns().add(driverNameColumn);
+	    tableView.getColumns().add(driverPhoneColumn);
+	    tableView.getColumns().add(driverAddressColumn);
+
+	    // ObservableList to hold Driver data
+	    loadDriverData(driverData);  // Method to load data into the table
+	    tableView.setItems(driverData);
+
+	    // Layout for the table
+	    VBox vbox = new VBox(10, titleLabel, tableView);
+	    vbox.setAlignment(Pos.CENTER);
+	    root.setBottom(vbox);
+
+	    // Form fields for Driver input
+	    Label lID = new Label("Driver ID:");
+	    Label lIM = new Label("Manager ID:");
+	    Label lND = new Label("Driver Name:");
+	    Label lPD = new Label("Driver Phone");
+	    Label lAD = new Label("Driver Address");
+
+	    // TextField declarations (ensure these are initialized)
+	    TextField tfIID = new TextField();
+	    TextField tfIIMD = new TextField();
+	    TextField tfIND = new TextField();
+	    TextField tfIPD = new TextField();
+	    TextField tfIAD = new TextField();
+
+	    // Buttons
+	    Button insertButton = new Button("Insert");
+	    Button updateButton = new Button("Update");
+	    Button deleteButton = new Button("Delete");
+
+	    // GridPane for the input form
+	    GridPane gridPane = new GridPane();
+	    gridPane.setHgap(10);
+	    gridPane.setVgap(10);
+	    gridPane.addRow(0, lID, tfIID);
+	    gridPane.addRow(1, lIM, tfIIMD);
+	    gridPane.addRow(2, lND, tfIND);
+	    gridPane.addRow(3, lPD, tfIPD);
+	    gridPane.addRow(4, lAD, tfIAD);
+	    gridPane.addRow(5, insertButton, updateButton, deleteButton);
+	    gridPane.setAlignment(Pos.CENTER);
+
+	    // Center layout
+	    VBox centerBox = new VBox(20, titleLabel, gridPane);
+	    centerBox.setAlignment(Pos.CENTER);
+	    root.setCenter(centerBox);
+
+	    // Insert Button Action
+	    insertButton.setOnAction(e -> {
+	        try {
+	            int driverId = Integer.parseInt(tfIID.getText());
+	            int managerId = Integer.parseInt(tfIIMD.getText());
+	            String driverName = tfIND.getText();
+	            String driverPhone = tfIPD.getText();
+	            String driverAddress = tfIAD.getText();
+	            insertDriver(driverId, managerId, driverName, driverPhone, driverAddress);
+
+	            // Clear form fields
+	            tfIID.clear();
+	            tfIIMD.clear();
+	            tfIND.clear();
+	            tfIPD.clear();
+	            tfIAD.clear();
+	            driverData.clear();
+	            loadDriverData(driverData);
+	        } catch (NumberFormatException ex) {
+	            System.out.println("Invalid input. Please enter valid IDs.");
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	            // Handle database error
+	        }
+	    });
+
+	    // Update Button Action
+	    updateButton.setOnAction(e -> {
+	        updateDriverScreen();  // You should implement this method to update a driver's details
+	    });
+
+	    // Delete Button Action
+	    deleteButton.setOnAction(e -> {
+	        try {
+	            int driverId = Integer.parseInt(tfIID.getText());
+	            deleteDriver(driverId);
+
+	            // Clear form fields
+	            tfIID.clear();
+	            tfIIMD.clear();
+	            tfIND.clear();
+	            tfIPD.clear();
+	            tfIAD.clear();
+
+	            driverData.clear();
+	            loadDriverData(driverData);
+	        } catch (NumberFormatException ex) {
+	            System.out.println("Invalid input. Please enter a valid ID.");
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	            // Handle database error
+	        }
+	    });
+
+	    // Create Scene and show Stage
+	    Scene scene = new Scene(root, 600, 500);
+	    stage.setScene(scene);
+	    stage.setTitle("Driver Operations");
+	    stage.show();
+	    return stage;
+	}
+
+	// Method to load Driver data from the database
+	private void loadDriverData(ObservableList<Driver> driverData) {
+	    String query = "SELECT * FROM Driver";  // Assuming you have a table called 'Driver'
+	    try (Connection conn = DatabaseConnector.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(query);
+	         ResultSet rs = pstmt.executeQuery()) {
+
+	        while (rs.next()) {
+	            int driverId = rs.getInt("Driver_ID");
+	            int managerId = rs.getInt("Manager_ID");
+	            String driverName = rs.getString("Name");
+	            String driverPhone = rs.getString("Phone");
+	            String driverAddress = rs.getString("Address");
+
+	            // Add Driver to the ObservableList
+	            driverData.add(new Driver(driverId, managerId, driverName, driverPhone, driverAddress));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        // Handle database error
+	    }
+	}
+
+
+	public Stage updateDriverScreen() {
+		Stage stage = new Stage();
+		BorderPane root = new BorderPane();
+	    root.setPadding(new Insets(20));
+
+	    Label titleLabel = new Label("Driver Operations");
+	    titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+	    
+	    Label lCID = new Label("Current Driver ID:");
+        Label lNID = new Label("New Driver ID:");
+        Label lIM = new Label("Manager ID:");
+        Label lND = new Label("Driver Name:");
+	    Label lPD = new Label("Driver Phone");
+	    Label lAD = new Label("Driver Address");
+
+        Button updateButton = new Button("Update");
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+	    gridPane.setVgap(10);
+	    gridPane.addRow(0, lCID, tfICID);
+	    gridPane.addRow(1, lNID, tfINID);
+	    gridPane.addRow(2, lIM, tfINIMD);
+	    gridPane.addRow(3, lND, tfINND);
+	    gridPane.addRow(4, lPD, tfINPD);
+	    gridPane.addRow(5, lAD, tfINAD);
+	    gridPane.addRow(6, updateButton);
+	    gridPane.setAlignment(Pos.CENTER);
+	    VBox centerBox = new VBox(20, titleLabel, gridPane);
+	    centerBox.setAlignment(Pos.CENTER);
+	    root.setCenter(centerBox);
+        
+
+	    updateButton.setOnAction(e -> {
+	        try {
+	            int currentDriverId = Integer.parseInt(tfICID.getText());
+	            int newDriverId = Integer.parseInt(tfINID.getText());
+	            int managerId = Integer.parseInt(tfINIMD.getText());
+	            String driverName = tfINND.getText(); // Assuming this field contains the updated driver's name
+	            String driverPhone = (tfINPD.getText());
+	            String driverAddress = tfINAD.getText(); // Assuming this field contains the updated driver's address
+
+	            updateDriver(currentDriverId, newDriverId, managerId, driverName, driverPhone, driverAddress);
+	            tfICID.clear();
+	            tfINID.clear();
+	            tfINIMD.clear();
+	            tfINND.clear();
+	            tfINPD.clear();
+	            tfINAD.clear();
+	            driverData.clear();
+	            loadDriverData(driverData);
+	            
+	        } catch (NumberFormatException ex) {
+	            System.out.println("Invalid input. Please enter valid IDs.");
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	            // Handle database error
+	        }
+	    });
+
+	    
+        Scene scene = new Scene(root, 600, 500);
+	    stage.setScene(scene);
+	    stage.setTitle("Manager Screen");
+	    stage.show();
+	    return stage;
+	}
+
+
+    
+
+	public void insertManager(int managerId, String managerName, String managerPhone, String managerAddress) throws SQLException {
+	    if (managerExists(managerId)) {
+	        System.out.println("Manager with ID " + managerId + " already exists.");
+	        return;
+	    }
+
+	    // Proceed with the insertion if the manager doesn't exist
+	    Connection conn = DatabaseConnector.getConnection();
+	    String sql = "INSERT INTO Manager (Manager_ID, Name, Phone, Address) VALUES (?, ?, ?, ?)";
+	    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, managerId);
+	        pstmt.setString(2, managerName);
+	        pstmt.setString(3, managerPhone);
+	        pstmt.setString(4, managerAddress);
+	        int rowsAffected = pstmt.executeUpdate();
+	        if (rowsAffected > 0) {
+	            System.out.println("Insert Manager with ID " + managerId + " was successful.");
+	        } else {
+	            System.out.println("Insert Manager with ID " + managerId + " failed.");
+	        }
+	    }
+	}
+
+
+
+	public void insertDriver(int driverId, int managerId, String driverName, String driverPhone, String driverAddress) throws SQLException {
+	    if (driverExists(driverId)) {
+	        System.out.println("Driver with ID " + driverId + " already exists.");
+	        return;
+	    }
+
+	    Connection conn = DatabaseConnector.getConnection();
+	    String sql = "INSERT INTO Driver (Driver_ID, Manager_ID, Name, Phone, Address) VALUES (?, ?, ?, ?, ?)";
+	    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, driverId);
+	        pstmt.setInt(2, managerId);
+	        pstmt.setString(3, driverName);
+	        pstmt.setString(4, driverPhone);
+	        pstmt.setString(5, driverAddress);
+	        int rowsAffected = pstmt.executeUpdate();
+	        if (rowsAffected > 0) {
+	            System.out.println("Insert Driver with ID " + driverId + " was successful.");
+	        } else {
+	            System.out.println("Insert Driver with ID " + driverId + " failed.");
+	        }
+	    }
+	}
+	
+	public void updateManager(int managerCurrentId, int managerNewId, String managerName, String managerPhone, String managerAddress) throws SQLException {
+	    // Check if the manager with the given current ID exists
+	    if (!managerExists(managerCurrentId)) {
+	        System.out.println("Manager with ID " + managerCurrentId + " does not exist.");
+	        return;
+	    }
+
+	    Connection conn = DatabaseConnector.getConnection();
+	    String sql = "UPDATE Manager SET Manager_ID = ?, Name = ?, Phone = ?, Address = ? WHERE Manager_ID = ?";
+	    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, managerNewId);
+	        pstmt.setString(2, managerName);
+	        pstmt.setString(3, managerPhone);
+	        pstmt.setString(4, managerAddress);
+	        pstmt.setInt(5, managerCurrentId);
+	        int rowsAffected = pstmt.executeUpdate();
+	        if (rowsAffected > 0) {
+	            System.out.println("Update Manager with ID " + managerCurrentId + " was successful.");
+	        } else {
+	            System.out.println("Update Manager with ID " + managerCurrentId + " failed.");
+	        }
+	    }
+	}
+
+	public void updateDriver(int currentDriverId, int newDriverId, int managerId, String driverName, String driverPhone, String driverAddress) throws SQLException {
+	    Connection conn = DatabaseConnector.getConnection();
+	    String sql = "UPDATE Driver SET Driver_ID = ?, Manager_ID = ?, Name = ?, Phone = ?, Address = ? WHERE Driver_ID = ?";
+	    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, newDriverId);
+	        pstmt.setInt(2, managerId);
+	        pstmt.setString(3, driverName);
+	        pstmt.setString(4, driverPhone);
+	        pstmt.setString(5, driverAddress);
+	        pstmt.setInt(6, currentDriverId);
+	        int rowsAffected = pstmt.executeUpdate();
+	        if (rowsAffected > 0) {
+	            System.out.println("Update Driver with ID " + currentDriverId + " was successful.");
+	        } else {
+	            System.out.println("Update Driver with ID " + currentDriverId + " failed.");
+	        }
+	    }
+	}
+
+	public void deleteManager(int managerId) throws SQLException {
+	    Connection conn = DatabaseConnector.getConnection();
+	    String sql = "DELETE FROM Manager WHERE Manager_ID = ?";
+	    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, managerId);
+	        int rowsAffected = pstmt.executeUpdate();
+	        if (rowsAffected > 0) {
+	            System.out.println("Delete Manager with ID " + managerId + " was successful.");
+	        } else {
+	            System.out.println("Delete Manager with ID " + managerId + " failed.");
+	        }
+	    }
+	}
+
+	public void deleteDriver(int driverId) throws SQLException {
+	    Connection conn = DatabaseConnector.getConnection();
+	    String sql = "DELETE FROM Driver WHERE Driver_ID = ?";
+	    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, driverId);
+	        int rowsAffected = pstmt.executeUpdate();
+	        if (rowsAffected > 0) {
+	            System.out.println("Delete Driver with ID " + driverId + " was successful.");
+	        } else {
+	            System.out.println("Delete Driver with ID " + driverId + " failed.");
+	        }
+	    }
+	}
+
+
+    private boolean managerExists(int managerId) throws SQLException {
+        Connection conn = DatabaseConnector.getConnection();
+        String sql = "SELECT COUNT(*) FROM Manager WHERE Manager_ID = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, managerId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    return count > 0; // Returns true if manager with the given ID exists
+                }
+            }
+        }
+        return false; // Manager with the given ID not found
+    }
+    
+    private boolean driverExists(int driverId) throws SQLException {
+        Connection conn = DatabaseConnector.getConnection();
+        String sql = "SELECT COUNT(*) FROM Driver WHERE Driver_ID = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, driverId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    return count > 0; // Returns true if driver with the given ID exists
+                }
+            }
+        }
+        return false; // Driver with the given ID not found
+    }
+
+    public void displayAllManagers() {
+        String query = "SELECT * FROM Manager";
+        try (Connection conn = DatabaseConnector.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            System.out.println("Managers in the database:");
+            while (rs.next()) {
+                int id = rs.getInt("Manager_ID");
+                String name = rs.getString("Name");
+                String phone = rs.getString("Phone");
+                String address = rs.getString("Address");
+                System.out.println("ID: " + id + ", Name: " + name + ", Phone: " + phone + ", Address: " + address);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) {
+        try {
+            Phase3Operations operations = new Phase3Operations();
+
+            // Insert a new manager
+            operations.insertManager(3, "Michael Green", "555-987-6543", "789 Cedar Lane");
+
+            // Display all managers to verify
+            operations.displayAllManagers();
+            launch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+}

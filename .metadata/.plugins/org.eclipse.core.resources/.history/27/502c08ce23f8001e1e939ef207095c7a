@@ -1,0 +1,51 @@
+package application;
+
+public class NodeD {
+    private District data;
+    private NodeD next;
+    private NodeD prev;
+    private NodeDS firstLocation;
+
+    public NodeD(District data) {
+        this.data = data;
+    }
+
+    public District getData() {
+        return data;
+    }
+
+    public void setData(District data) {
+        this.data = data;
+    }
+
+    public NodeD getNext() {
+        return next;
+    }
+
+    public void setNext(NodeD next) {
+        this.next = next;
+    }
+
+    public NodeD getPrev() {
+        return prev;
+    }
+
+    public void setPrev(NodeD prev) {
+        this.prev = prev;
+    }
+    
+	public NodeDS getFirstLocation() {
+		return firstLocation;
+	}
+
+	public void setFirstLocation(NodeDS firstLocation) {
+		this.firstLocation = firstLocation;
+	}
+
+	@Override
+	public String toString() {
+		return "NodeD [data=" + data + ", next=" + next + ", prev=" + prev +"]";
+	}
+    
+    
+}

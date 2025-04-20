@@ -1,0 +1,27 @@
+ private void addMember() {
+            int id = Integer.parseInt(idField.getText());
+            String firstName = firstNameField.getText();
+            String lastName = lastNameField.getText();
+            String phone = phoneField.getText();
+            double amountPay = Double.parseDouble(amountPayField.getText());
+            String address = addressField.getText();
+            String gender = genderComboBox.getValue();
+
+            if (firstName.isEmpty() == null|| lastName.isEmpty()== null || phone.isEmpty()== null || address.isEmpty()== null || gender == null) {
+                return;
+            }
+
+            // Create a new Member object and add it to the shared list
+            Member newMember = new Member(id, firstName, lastName, phone, amountPay, address, gender);
+            memberListTab.addMember(newMember);
+
+            // Clear fields after adding
+            idField.clear();
+            firstNameField.clear();
+            lastNameField.clear();
+            phoneField.clear();
+            amountPayField.clear();
+            addressField.clear();
+            genderComboBox.getSelectionModel().clearSelection();
+
+    }
